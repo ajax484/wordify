@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wordify</title>
+    <link href="./assets/loading.css" type="text/css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="page">
+        <h1>Hello World!</h1>
+        <button onClick="buttonClick()">click me for loading</button>
+    </div>
+    <div class="loader-div">
+        <span class="loader">
+            <span></span>
+            <span></span>
+        </span>
+    </div>
+</body>
+
+<script type="text/javascript">
+    const setVisible = (Selector, visible) => {
+        var Select = document.querySelector(Selector);
+        Select.style.display = visible ? 'flex' : 'none';
+    };
+
+    setVisible('.page', false);
+    setVisible('.loader-div', true);
+
+    document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+            setVisible('.page', true);
+            setVisible('.loader-div', false);
+        }, 5000);
+    });
+
+    const buttonClick = () => {
+
+        setVisible('.page', false);
+        setVisible('.loader-div', true);
+
+        setTimeout(() => {
+            setVisible('.page', true);
+            setVisible('.loader-div', false);
+        }, 5000);
+    }
+
+</script>
+
+</html>

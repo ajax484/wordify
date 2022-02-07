@@ -1,0 +1,57 @@
+* {
+    margin: 0;
+    box-sizing: border-box;
+    background-color: #000;
+    color: #fff;
+}
+
+.header {
+    text-align: center;
+}
+
+.container {
+    height:100vh;
+    padding-top: 30px;
+    width: auto;
+    border: 3px solid #333;
+}
+
+.letterbox-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.letterbox-row {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    padding: 10px;
+}
+
+.letterbox {
+    width: 50px;
+    height: 50px;
+    font-size: 30px;
+    border: 5px solid #555;
+    text-align: center;
+}
+
+.btn {
+    background-color: #555;    
+}
+
+.wrong {
+    background-color: #333;
+    border: none;
+}
+
+.almost {
+    background-color: yellow;
+}
+
+.right {
+    background-color: green;
+}
+
