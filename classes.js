@@ -1,14 +1,14 @@
 /* 
 to do 
-1. fix backspace
-3. fix number of letters being colored yellow to actual number in word if multiple
-4 add an animation after right answer
-5. possibly, add timing to game logic
-6. array of common words 
-7. add indicator of current row for UI
+1. fix backspace !important
+2. fix number of letters being colored yellow to actual number in word if multiple !important
+3 add an animation after right answer 
+4. possibly, add timing to game logic !important
 */
 
+
 let wordArr = [];
+let wordCorrect = [];
 fetch('./wordFive.txt')
     .then(response => response.text())
     .then(data => {
@@ -16,15 +16,15 @@ fetch('./wordFive.txt')
     })
 
 const letterbox_container = document.querySelector('.letterbox-container');
-// const wordArr = [];
-const wordCorrect = [];
-let game, level, entLast;
+let game, level;
 
+//togle visibilty of a div
 const setVisible = (Selector, visible) => {
     var Select = document.querySelector(Selector);
     Select.style.display = visible ? 'flex' : 'none';
 };
 
+// switch from one view to another
 const transition = (start, stop) => {
     setVisible(start, false);
     setVisible('.loader-div', true);
@@ -35,6 +35,7 @@ const transition = (start, stop) => {
     }, 2000)
 };
 
+// intial display
 document.addEventListener('DOMContentLoaded', () => {
     setVisible('.start-container', false);
     setVisible('.container', false);
@@ -44,7 +45,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // start a new game
-
 document.querySelectorAll('.button-start').forEach(butnStart => {
     butnStart.addEventListener('click', () => {
         game = new Game();
@@ -54,53 +54,45 @@ document.querySelectorAll('.button-start').forEach(butnStart => {
     });
 })
 
+document.querySelector('.key--backspace').addEventListener('click', (e) => {
+    delLet(level);
+})
+
 //listen for key press
-document.addEventListener('keydown', (e) => {
-    const letter = e.key;
-    const char = e.keyCode;
-    const currentBox = document.querySelector(`[row="${level.getcurRow()}"][col="${level.getcurBox()}"]`)
-    const prevBox = document.querySelector(`[row="${level.getcurRow()}"][col="${level.getcurBox() - 1}"]`)
-
-    //check if it is a backspace
-    if (letter === "Backspace") {
-        delLet(prevBox, currentBox);
-        console.log(level.getcurBox());
-    }
-
-    // check if key is an alphabet
-    if (char >= 65 && char <= 90 || char >= 97 && char <= 122) {
-        entLet(currentBox, letter);
-        // console.log(level.getcurBox());
-    }
+document.querySelectorAll('.key--letter').forEach(key => {
+    key.addEventListener('click', (e) => {
+        const letter = key.getAttribute('data-char');
+        entLet(letter, level);
+    })
 
 })
 
-const entLet = (currentBox, letter) => {
-    entLast = true;
-    if (level.curBox < 5) {
-        level.updatecurBox(0);
+// update the boxes after there is a new letter or delete
+const displayBox = (Boxes, level) => {
+    Boxes.forEach(box => {box.innerHTML = ''});
+    for(let i = 0; i < level.letters.length; i++){
+        Boxes[i].innerHTML = level.letters[i];
     }
-
-    currentBox.innerHTML = letter;
-    console.log(entLast);
 
 }
 
-const delLet = (prevBox, currentBox) => {
-    if (entLast == true) {
-        currentBox.innerHTML = '';
-        console.log('returned');
-    } else {
-        prevBox.innerHTML = '';
+const entLet = (letter, level) => {
+    const letters = level.letters
+    if(letters.length == 5){
+        return;
     }
+    letters.push(letter);
+    const Boxes = document.querySelectorAll(`.letterbox[row="${level.getcurRow()}"]`);
+    displayBox(Boxes, level);
 
-    entLast = false;
-    console.log(entLast);
+}
 
-    if (level.curBox > 1) {
-        level.updatecurBox(1);
-    }
-    
+const delLet = (level) => {
+    const Boxes = document.querySelectorAll(`.letterbox[row="${level.getcurRow()}"]`);
+    level.letters.pop();
+    // console.log(level.letters);
+
+    displayBox(Boxes, level);
 }
 
 class Game {
@@ -119,10 +111,9 @@ class Game {
 
         this.updateLevelTries = () => {
             const tries = this.levelTries;
-            if (tries > 5) {
+            if (tries > 4) {
                 console.log('here');
                 this.gameStop();
-                // return;
             }
             this.levelTries++;
         }
@@ -155,7 +146,7 @@ class Game {
 
     gameGenerateBoard = () => {
         letterbox_container.innerHTML = '';
-        for (let i = 1; i < 8; i++) {
+        for (let i = 1; i < 7; i++) {
             const letterbox_row = document.createElement('div');
             letterbox_row.classList.add('letterbox-row');
             letterbox_row.setAttribute('tries', `${i}`);
@@ -186,21 +177,20 @@ class Game {
         document.querySelectorAll('.btn').forEach((entBtn) => {
             entBtn.addEventListener('click', () => {
                 const tried = entBtn.getAttribute('tried');
-                let word = this.word;
-                let ansArr = word.split('');
-                let tries = [];
-                const box = [];
+                let ansArr = this.word.split('');
+                const tries = level.letters;
+                if(tries.length !== 5) {
+                    return;
+                } 
+                console.log(ansArr);
+                console.log(tries);
                 const right = [];
-
-                document.querySelectorAll(`[row="${tried}"]`).forEach((letterbox) => {
-                    box.push(letterbox);
-                    tries.push(letterbox.innerHTML);
-                });
-
+                const box = document.querySelectorAll(`[row="${tried}"]`);
 
                 //if letter matches and they are in the same position, mark green
                 for (let i = 0; i < 5; i++) {
-                    if (tries[i] == ansArr[i]) {
+                    console.log(tries[i].toLowerCase(), ansArr[i]);
+                    if (tries[i].toLowerCase() == ansArr[i]) {    
                         box[i].classList.add('right');
                         right.push(i);
                     }
@@ -215,7 +205,7 @@ class Game {
                 let x;
                 for (x in ansArr) {
                     if (!right.includes(x)) {
-                        if (ansArr.includes(tries[x]) && !right.includes(ansArr.indexOf(tries[x]))) {
+                        if (ansArr.includes(tries[x].toLowerCase()) && !right.includes(ansArr.indexOf(tries[x].toLowerCase()))) {
                             box[x].classList.add('almost');
                         }
                     }
@@ -276,6 +266,7 @@ class Level {
         }
 
         this.updatecurRow = () => {
+            this.letters = [];
             this.curRow++;
         }
 
@@ -297,7 +288,7 @@ class Level {
     levelStart = () => {
         this.curBox = 1;
         this.curRow = 1;
-        console.log(this.curRow);
+        this.letters = [];
     }
 
 }

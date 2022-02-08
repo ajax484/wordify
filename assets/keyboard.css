@@ -1,62 +1,3 @@
-* {
-    margin: 0;
-    box-sizing: border-box;
-    background-color: #000;
-    color: #fff;
-}
-
-.header {
-    text-align: center;
-}
-
-.container {
-    height:100vh;
-    padding-top: 30px;
-    width: auto;
-    border: 3px solid #333;
-}
-
-.letterbox-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-.letterbox-row {
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-    padding: 10px;
-}
-
-.letterbox {
-    width: 3rem;
-    height: 3rem;
-    font-size: 1.5rem;
-    border: 5px solid #555;
-    text-align: center;
-    text-transform: uppercase;
-    font-weight: bold;
-}
-
-.btn {
-    background-color: #555;    
-}
-
-.wrong {
-    background-color: #333;
-    border: none;
-}
-
-.almost {
-    background-color: yellow;
-}
-
-.right {
-    background-color: green;
-}
-
 .keyboard {
     text-align: center;
     font-size: 14px;
@@ -119,14 +60,6 @@
 
 .key--word > * {
     font-size: 0.8em;
-}
-
-@media (max-width: 600px) {
-    .letterbox {
-        font-size: 1em; 
-        height: 2em;
-        width: 2em;
-    }
 }
   
 @media only screen and (min-width: 320px) and (max-width:378px) {
