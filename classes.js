@@ -16,7 +16,9 @@ fetch('./wordFive.txt')
     })
 
 const letterbox_container = document.querySelector('.letterbox-container');
-let game, level;
+const timeSpan = document.querySelector('.timeSpan');
+let timer = 30;
+let game, level, intervalID;
 
 //togle visibilty of a div
 const setVisible = (Selector, visible) => {
@@ -34,6 +36,16 @@ const transition = (start, stop) => {
         setVisible(stop, true);
     }, 2000)
 };
+
+const setTimer = () => {
+    if (timer > 0) {
+        timeSpan.innerHTML = timer;
+        timer--;
+    } else {
+        game.gameStop();
+    }
+};
+
 
 // intial display
 document.addEventListener('DOMContentLoaded', () => {
@@ -69,8 +81,8 @@ document.querySelectorAll('.key--letter').forEach(key => {
 
 // update the boxes after there is a new letter or delete
 const displayBox = (Boxes, level) => {
-    Boxes.forEach(box => {box.innerHTML = ''});
-    for(let i = 0; i < level.letters.length; i++){
+    Boxes.forEach(box => { box.innerHTML = '' });
+    for (let i = 0; i < level.letters.length; i++) {
         Boxes[i].innerHTML = level.letters[i];
     }
 
@@ -78,7 +90,7 @@ const displayBox = (Boxes, level) => {
 
 const entLet = (letter, level) => {
     const letters = level.letters
-    if(letters.length == 5){
+    if (letters.length == 5) {
         return;
     }
     letters.push(letter);
@@ -179,9 +191,9 @@ class Game {
                 const tried = entBtn.getAttribute('tried');
                 let ansArr = this.word.split('');
                 const tries = level.letters;
-                if(tries.length !== 5) {
+                if (tries.length !== 5) {
                     return;
-                } 
+                }
                 console.log(ansArr);
                 console.log(tries);
                 const right = [];
@@ -190,7 +202,7 @@ class Game {
                 //if letter matches and they are in the same position, mark green
                 for (let i = 0; i < 5; i++) {
                     console.log(tries[i].toLowerCase(), ansArr[i]);
-                    if (tries[i].toLowerCase() == ansArr[i]) {    
+                    if (tries[i].toLowerCase() == ansArr[i]) {
                         box[i].classList.add('right');
                         right.push(i);
                     }
@@ -289,6 +301,9 @@ class Level {
         this.curBox = 1;
         this.curRow = 1;
         this.letters = [];
+        timer = 30;
+        clearInterval(intervalID);
+        intervalID = setInterval(setTimer, 1000);
     }
 
 }
