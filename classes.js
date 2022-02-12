@@ -15,7 +15,7 @@ fetch('./wordFiveDef.txt')
 
 const letterbox_container = document.querySelector('.letterbox-container');
 const timeSpan = document.querySelector('.timeSpan');
-let timer = 30;
+let timer = 45;
 let game, level, intervalID;
 
 //togle visibilty of a div
