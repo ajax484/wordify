@@ -327,7 +327,7 @@ class Level {
         this.curBox = 1;
         this.curRow = 1;
         this.letters = [];
-        timer = 30;
+        timer = 45;
         clearInterval(intervalID);
         intervalID = setInterval(setTimer, 1000);
     }
