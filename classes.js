@@ -1,18 +1,16 @@
 /* 
 to do 
-1. fix backspace !important
-2. fix number of letters being colored yellow to actual number in word if multiple !important
-3 add an animation after right answer 
-4. possibly, add timing to game logic !important
+1. fix number of letters being colored yellow to actual number in word if multiple !important
+2. add an animation 
 */
 
 
 let wordArr = [];
 let wordCorrect = [];
-fetch('./wordFive.txt')
+fetch('./wordFiveDef.txt')
     .then(response => response.text())
     .then(data => {
-        wordArr = data.split(',');
+        wordArr = data.split(';');
     })
 
 const letterbox_container = document.querySelector('.letterbox-container');
@@ -46,6 +44,21 @@ const setTimer = () => {
     }
 };
 
+const cleanJSON = (s) => {
+    // preserve newlines, etc - use valid JSON
+    s = s.replace(/\\n/g, "\\n")
+        .replace(/\\'/g, "\\'")
+        .replace(/\\"/g, '\\"')
+        .replace(/\\&/g, "\\&")
+        .replace(/\\r/g, "\\r")
+        .replace(/\\t/g, "\\t")
+        .replace(/\\b/g, "\\b")
+        .replace(/\\f/g, "\\f");
+
+    // remove non-printable and other non-valid JSON chars
+    s = s.replace(/[\u0000-\u001F]+/g,"");
+    return JSON.parse(s);
+}
 
 // intial display
 document.addEventListener('DOMContentLoaded', () => {
@@ -113,12 +126,18 @@ class Game {
         this.wordArr = wordArr;
         this.CorrectArr = [];
         this.word = '';
+        this.definition = '';
+
 
         this.updateScore = () => {
             this.score++;
             document.querySelectorAll('.score').forEach(score => {
                 score.innerHTML = this.score;
             })
+        }
+
+        this.updateDefinition = () => {
+            document.querySelector('.definition').innerHTML = this.definition;
         }
 
         this.updateLevelTries = () => {
@@ -138,9 +157,14 @@ class Game {
     // generate new word
     newWord = () => {
         this.wordArr.splice(this.wordArr.indexOf(this.word), 1);
-        this.word = this.wordArr[Math.floor(Math.random() * this.wordArr.length)];
+        // const wordObj = JSON.parse(this.wordArr[Math.floor(Math.random() * this.wordArr.length).word])
+        const num = Math.floor(Math.random() * this.wordArr.length);
+        console.log(num);
+        const wordObj = cleanJSON(this.wordArr[num]);
+        this.word = wordObj.word;
+        this.definition = wordObj.definition;
         console.log(this.word);
-        return this.word;
+        console.log(this.definition);
     }
 
     /* 
@@ -152,6 +176,7 @@ class Game {
         this.CorrectArr.push(this.word);
         this.updateScore();
         this.newWord();
+        this.updateDefinition();
         level.levelStart();
         this.gameGenerateBoard();
     }
@@ -253,6 +278,7 @@ class Game {
         })
 
         this.newWord();
+        this.updateDefinition();
         this.gameGenerateBoard();
 
     }
