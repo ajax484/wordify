@@ -66,6 +66,26 @@
     background-color: green;
 }
 
+.entered {
+    transition: border-color 800ms;
+    border-color: whitesmoke;
+}
+
+@keyframes shake {
+    
+    0% {
+        transform: translateX(3px, 0);
+    }
+
+    50% {
+        transform: translateX(-3px, 0);
+    }
+
+    100% {
+        transform: translateX(0, 0);
+    }
+}
+
 .keyboard {
     text-align: center;
     font-size: 14px;

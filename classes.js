@@ -56,7 +56,7 @@ const cleanJSON = (s) => {
         .replace(/\\f/g, "\\f");
 
     // remove non-printable and other non-valid JSON chars
-    s = s.replace(/[\u0000-\u001F]+/g,"");
+    s = s.replace(/[\u0000-\u001F]+/g, "");
     return JSON.parse(s);
 }
 
@@ -93,11 +93,21 @@ document.querySelectorAll('.key--letter').forEach(key => {
 })
 
 // update the boxes after there is a new letter or delete
-const displayBox = (Boxes, level) => {
+const displayBox = (Boxes, level, entDet) => {
     Boxes.forEach(box => { box.innerHTML = '' });
     for (let i = 0; i < level.letters.length; i++) {
         Boxes[i].innerHTML = level.letters[i];
+
+        if (entDet == 0) {
+            if (!Boxes[i].classList.contains('entered')) { Boxes[i].classList.add('entered') };
+            console.log(Boxes[i]);
+        }
     }
+
+    if (entDet == 1) {
+        Boxes[level.letters.length].classList.remove('entered');
+    }
+
 
 }
 
@@ -108,7 +118,7 @@ const entLet = (letter, level) => {
     }
     letters.push(letter);
     const Boxes = document.querySelectorAll(`.letterbox[row="${level.getcurRow()}"]`);
-    displayBox(Boxes, level);
+    displayBox(Boxes, level, 0);
 
 }
 
@@ -117,7 +127,7 @@ const delLet = (level) => {
     level.letters.pop();
     // console.log(level.letters);
 
-    displayBox(Boxes, level);
+    displayBox(Boxes, level, 1);
 }
 
 class Game {
@@ -216,13 +226,24 @@ class Game {
                 const tried = entBtn.getAttribute('tried');
                 let ansArr = this.word.split('');
                 const tries = level.letters;
+                const box = document.querySelectorAll(`[row="${tried}"]`);
                 if (tries.length !== 5) {
+                    box.forEach(boxes => {
+                        boxes.animate([
+                            { transform: 'translateX(3px)' },
+                            { transform: 'translateX(-3px)' },
+                            { transform: 'translateX(0)' }
+                        ], {
+                            duration: 150
+                        });
+                        console.log(boxes);
+                    });
                     return;
                 }
                 console.log(ansArr);
                 console.log(tries);
                 const right = [];
-                const box = document.querySelectorAll(`[row="${tried}"]`);
+
 
                 //if letter matches and they are in the same position, mark green
                 for (let i = 0; i < 5; i++) {
@@ -270,8 +291,7 @@ class Game {
      */
     gameStart = () => {
         setVisible('.stop-container', false);
-        transition('.start-container', '.letterbox-container');
-
+        
         document.querySelector('.container').style.display = 'contents';
         document.querySelectorAll('.score').forEach(score => {
             score.innerHTML = this.score;
@@ -281,6 +301,7 @@ class Game {
         this.updateDefinition();
         this.gameGenerateBoard();
 
+        transition('.start-container', '.letterbox-container');
     }
 
     gameStop = () => {
